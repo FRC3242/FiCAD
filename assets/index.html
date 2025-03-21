@@ -14,6 +14,11 @@
         body {
             background: #f4f4f4;
             color: #333;
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            background: #222;
+            color: #f4f4f4;
         }
         header {
             background: #228B22;
@@ -24,7 +29,8 @@
         }
         nav {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
             background: #006E33;
             padding: 15px;
             position: sticky;
@@ -34,7 +40,7 @@
         }
         nav a {
             color: white;
-            margin: 0 20px;
+            margin: 0 15px;
             text-decoration: none;
             font-weight: bold;
             font-size: 1.1em;
@@ -42,6 +48,15 @@
         }
         nav a:hover {
             color: #FFD700;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: white;
+        }
+        .menu {
+            display: flex;
         }
         section {
             padding: 50px;
@@ -67,6 +82,32 @@
             background: #FFD700;
             color: #333;
         }
+        .features {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .feature {
+            width: 45%;
+            padding: 20px;
+            background: #e3e3e3;
+            border-radius: 10px;
+            margin: 10px;
+            transition: 0.3s;
+        }
+        .feature:hover {
+            transform: scale(1.05);
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .contact-form button {
+            width: 100%;
+        }
         footer {
             background: #333;
             color: white;
@@ -76,6 +117,21 @@
             bottom: 0;
             width: 100%;
         }
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #006E33;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .menu { display: none; flex-direction: column; }
+            .menu-toggle { display: block; }
+        }
     </style>
 </head>
 <body>
@@ -83,10 +139,14 @@
         <h1>FiCAD - FIRST Inspired Computer Aided Drafting</h1>
     </header>
     <nav>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#features">Features</a>
-        <a href="#contact">Contact</a>
+        <span class="menu-toggle">☰</span>
+        <div class="menu">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <button class="cta-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     </nav>
     <section id="home">
         <h2>Welcome to FiCAD</h2>
@@ -95,24 +155,43 @@
     </section>
     <section id="about">
         <h2>About This Program</h2>
-        <p>Team 3242, the "Illumicats" wanted an electrical CAD program to draw out our schematics for FRC Robotics quickly and efficiently. This is where FiCAD comes in.<</p>
+        <p>Team 3242, the "Illumicats" developed FiCAD for efficient electrical schematic design in FRC Robotics.</p>
     </section>
     <section id="features">
         <h2>Features</h2>
-        <ul>
-            <li>Drag-and-drop electrical components</li>
-            <li>Real-time circuit simulation</li>
-            <li>Up-to-date electrical components</li>
-            <li>Printing to PDF</li>
-        </ul>
+        <div class="features">
+            <div class="feature">⚡ Drag-and-drop components</div>
+            <div class="feature">🔧 Real-time circuit simulation</div>
+            <div class="feature">📜 Up-to-date components</div>
+            <div class="feature">🖨️ Export to PDF</div>
+        </div>
     </section>
     <section id="contact">
         <h2>Contact Us</h2>
-        <p>Have questions? Reach out to Team 3242 for more information.</p>
-        <p>Email: <a href="mailto:FRC3242@gmail.com">FRC3242@gmail.com</a></p>
+        <form class="contact-form">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" rows="4" required></textarea>
+            <button class="cta-button">Send Message</button>
+        </form>
     </section>
     <footer>
         <p>&copy; 2025 FiCAD by Team 3242 "Illumicats". All rights reserved.</p>
     </footer>
+    <button id="back-to-top" onclick="scrollToTop()">⬆</button>
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.menu').classList.toggle('show');
+        });
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        window.addEventListener('scroll', () => {
+            document.getElementById('back-to-top').style.display = window.scrollY > 300 ? 'block' : 'none';
+        });
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
