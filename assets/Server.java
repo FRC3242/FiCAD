@@ -3,23 +3,29 @@ package assets;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
   
     // Initialize socket and input stream
-    private Socket s = null;
-    private ServerSocket ss = null;
-    private DataInputStream in = null;
+    private static String socketIp = "127.0.0.1";
+    private static int socketPort = 5425;
+    private static Socket s = null;
+    private static DataInputStream in = null;
 
     // Constructor with port
-    public Server(int port) {
+    public Server (int port) {
       
         // Starts server and waits for a connection
+        
+    }
+
+    public static void main (String args[]) {
         try
         {
-            ss = new ServerSocket(port);
+            ServerSocket ss = new ServerSocket(socketPort);
             System.out.println("Server started");
 
             System.out.println("Waiting for a client ...");
@@ -28,8 +34,7 @@ public class Server {
             System.out.println("Client accepted");
 
             // Takes input from the client socket
-            in = new DataInputStream(
-                new BufferedInputStream(s.getInputStream()));
+            in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
 
             String m = "";
 
@@ -57,10 +62,5 @@ public class Server {
         {
             System.out.println(i);
         }
-    }
-
-    public static void main(String args[])
-    {
-        Server s = new Server(5000);
     }
 }

@@ -3,7 +3,6 @@ package assets;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -24,7 +23,6 @@ public class client {
         // Establish a connection
         try {
             s = new Socket(addr, port);
-            s.bind(new InetSocketAddress(socketIp,socketPort));
             System.out.println("Connected");
 
             // Sends output to the socket
