@@ -1,6 +1,6 @@
 package assets;
 
-public class main {
+public class integrate {
     public static void main (String[] args) {
         
     }
