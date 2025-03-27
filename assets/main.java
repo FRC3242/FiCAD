@@ -16,12 +16,16 @@ public class main {
         panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
         panel.setLayout(new GridLayout(0, 1));
         
+        ImagePanel image_panel = new ImagePanel();
+
+        frame.add(image_panel);
 
         frame.add(panel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("FiCAD Program");
         frame.pack();
         frame.setVisible(true);
+        frame.setSize(1600,1200);
 
     }    
 
