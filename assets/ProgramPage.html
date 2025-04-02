@@ -6,9 +6,6 @@
   <title>Program Page</title>
   <style>
     /* Reset & Global Styles */
-
-
-    
     * {
       margin: 0;
       padding: 0;
@@ -82,14 +79,14 @@
       transform: scale(1.05);
       color: #333;
     }
-    /* Container for Code */
+    /* Container for Circuit Simulator */
     .container {
       max-width: 900px;
       margin: 40px auto;
       padding: 20px;
       background: white;
       border-radius: 8px;
-      box-shadow: 0px 0px 12px rgba(0,0,0,0.1);
+      box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
     }
     .container h2 {
       margin-bottom: 20px;
@@ -98,41 +95,22 @@
       font-weight: 700;
       text-align: center;
     }
-    .code-box {
-      background-color: #e3e3e3;
-      padding: 15px;
-      border-radius: 8px;
+    .circuit-simulator {
+      width: 100%;
+      height: 400px;
       border: 1px solid #ccc;
-      min-height: 300px;
-      overflow: auto;
-      font-family: monospace;
-      white-space: pre-wrap;
-    }
-    /* Section for Home Button */
-    section#home {
-      padding: 50px 20px;
-      text-align: center;
-      max-width: 900px;
-      margin: 40px auto;
-      background: white;
-      box-shadow: 0px 0px 12px rgba(0,0,0,0.1);
-      border-radius: 8px;
-    }
-    section#home h2 {
-      color: #228B22;
-      font-size: 2em;
-      font-weight: 700;
-      margin-bottom: 20px;
+      background-color: white;
+      position: relative;
     }
     .footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -147,51 +125,187 @@
     </div>
     <button class="cta-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
   </nav>
+
   <div class="container">
-    <h2>Embedded Code</h2>
-    <div class="code-box">
-      <code>
-
-      </code>
-    </div>
-  </div>
-  <section id="home">
-    <h2>Return Home</h2>
-    <button class="cta-button" onclick="window.location.href='index.html'">Home</button>
+    <h2>Circuit Simulator</h2>
+    <canvas id="circuit-simulator" class="circuit-simulator"></canvas>
     
-  <button class="cta-button">Connect to Socket</button>
-  <button class="cta-button">Send Message</button>
-  </section>
+    <div>
+      <label for="componentDropdown">Component: </label>
+      <select id="componentDropdown">
+        <option value="30x30">30x30</option>
+        <option value="40x40">40x40</option>
+        <option value="50x50">50x50</option>
+        <option value="60x60">60x60</option>
+        <option value="70x70">70x70</option>
+        <option value="80x80">80x80</option>
+        <option value="90x90">90x90</option>
+        <option value="100x100">100x100</option>
+        <option value="110x110">110x110</option>
+        <option value="120x120">120x120</option>
+      </select>
 
+      <label for="wireDropdown">Wire: </label>
+      <select id="wireDropdown">
+        <option value="Red - Power">Red - Power</option>
+        <option value="Black - Ground">Black - Ground</option>
+        <option value="Blue - Signal">Blue - Signal</option>
+        <option value="Yellow - PWM">Yellow - PWM</option>
+        <option value="Green - CAN">Green - CAN</option>
+        <option value="White - Data">White - Data</option>
+      </select>
+    </div>
+
+    <button class="cta-button" id="addWireBtn">Toggle Wire Mode</button>
+    <button class="cta-button" id="clearBtn">Clear</button>
+  </div>
 
   <footer class="footer">
     <p>&copy; 2025 FiCAD by Team 3242 "Illumicats". All rights reserved.</p>
-</footer>
+  </footer>
 
   <script>
+    // Toggle dark mode
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
-      // Save preference in localStorage
       if (document.body.classList.contains('dark-mode')) {
         localStorage.setItem('darkMode', 'enabled');
       } else {
         localStorage.setItem('darkMode', 'disabled');
       }
     }
+
+    // Load dark mode preference
     function loadDarkModePreference() {
       const darkMode = localStorage.getItem('darkMode');
       if (darkMode === 'enabled') {
         document.body.classList.add('dark-mode');
       }
     }
+
     window.onload = loadDarkModePreference;
 
-    function connectToSocket () {
-      
+    // Circuit Simulator Code
+    const GRID_SIZE = 20;
+    let currentMode = 'ADD_COMPONENT';
+    let components = [];
+    let wires = [];
+    let selectedComponent = '30x30';
+    let selectedWire = 'Red - Power';
+    let wireStart = null;
+    let wireEnd = null;
+
+    const circuitSimulator = document.getElementById('circuit-simulator');
+    const ctx = circuitSimulator.getContext('2d');
+    const addWireBtn = document.getElementById('addWireBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const componentDropdown = document.getElementById('componentDropdown');
+    const wireDropdown = document.getElementById('wireDropdown');
+
+    // Set canvas size
+    circuitSimulator.width = 900;
+    circuitSimulator.height = 400;
+
+    addWireBtn.addEventListener('click', () => {
+      if (currentMode === 'ADD_WIRE') {
+        currentMode = 'SELECT';
+      } else {
+        currentMode = 'ADD_WIRE';
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      components = [];
+      wires = [];
+      draw();
+    });
+
+    componentDropdown.addEventListener('change', (e) => {
+      selectedComponent = e.target.value;
+    });
+
+    wireDropdown.addEventListener('change', (e) => {
+      selectedWire = e.target.value;
+    });
+
+    circuitSimulator.addEventListener('click', (e) => {
+      const snappedPoint = snapToGrid(e.offsetX, e.offsetY);
+
+      if (currentMode === 'ADD_COMPONENT') {
+        components.push(new ComponentBox(snappedPoint, selectedComponent));
+      } else if (currentMode === 'ADD_WIRE') {
+        if (wireStart === null) {
+          wireStart = snappedPoint;
+        } else {
+          wireEnd = snappedPoint;
+          wires.push(new Wire(wireStart, wireEnd, selectedWire));
+          wireStart = null;
+          wireEnd = null;
+        }
+      }
+
+      draw();
+    });
+
+    function snapToGrid(x, y) {
+      return {
+        x: Math.floor(x / GRID_SIZE) * GRID_SIZE,
+        y: Math.floor(y / GRID_SIZE) * GRID_SIZE,
+      };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, circuitSimulator.width, circuitSimulator.height);  // Clear the canvas
+      drawGrid();
+      components.forEach(component => component.draw());
+      wires.forEach(wire => wire.draw());
+    }
+
+    function drawGrid() {
+      ctx.strokeStyle = '#ccc';
+
+      for (let x = 0; x < circuitSimulator.width; x += GRID_SIZE) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, circuitSimulator.height);
+      }
+
+      for (let y = 0; y < circuitSimulator.height; y += GRID_SIZE) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(circuitSimulator.width, y);
+      }
+
+      ctx.stroke();
+    }
+
+    class Wire {
+      constructor(start, end, type) {
+        this.start = start;
+        this.end = end;
+        this.type = type;
+      }
+
+      draw() {
+        ctx.strokeStyle = '#000';
+        ctx.beginPath();
+        ctx.moveTo(this.start.x, this.start.y);
+        ctx.lineTo(this.end.x, this.end.y);
+        ctx.stroke();
+      }
+    }
+
+    class ComponentBox {
+      constructor(position, size) {
+        this.position = position;
+        this.size = parseInt(size.split('x')[0]);
+      }
+
+      draw() {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(this.position.x, this.position.y, this.size, this.size);
+        ctx.strokeStyle = 'black';
+        ctx.strokeRect(this.position.x, this.position.y, this.size, this.size);
+      }
     }
   </script>
-
-
-
 </body>
 </html>
