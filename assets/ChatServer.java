@@ -1,8 +1,8 @@
 package assets;
 
-import org.java-websocket.server.WebSocketServer;
-import org.java-websocket.WebSocket;
-import org.java-websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
 import java.net.InetSocketAddress;
 
 public class ChatServer extends WebSocketServer {

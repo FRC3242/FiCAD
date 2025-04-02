@@ -1,7 +1,7 @@
 package assets;
 
-import org.java-websocket.client.WebSocketClient;
-import org.java-websocket.handshake.ServerHandshake;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
 
 public class ChatClient extends WebSocketClient {
